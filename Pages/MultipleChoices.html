@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title></title>
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+    <link rel="stylesheet" href="Styles\Home.css" />
+    <style>
+        /* App custom styles */
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
+        </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.2.0/jquery.mobile-1.2.0.min.js">
+        </script>
+    <script src="Scripts\Home.js">
+        </script>
+
+    <script type="text/javascript">
+        var selectedMovie;
+        var results;
+
+        
+        
+
+        
+
+    </script>
+
+</head>
+<body>
+    <!-- Home -->
+    <div data-role="page" id="SearchResults">
+        <script type="text/javascript">
+            $("#SearchResults").on("pageshow", onPageShow);
+            var movieIdSearchUrl = 'http://api.themoviedb.org/3/movie/';
+            var tmdbkey = '?api_key=79b9df9924ea866f277e3c1a5fc7ab50';
+            function GetMovieObject() {
+                var param1 = selectedMovie; // this is the movie's id (not the title)
+                //var myQuery = basic.value;
+                jQuery.support.cors = true;
+                $.ajax({
+                    url: movieIdSearchUrl + param1 + tmdbkey,
+                    type: 'GET',
+                    dataType: 'jsonp',
+                    success: function (data1) {
+                        //alert(data1.title);
+
+                        localStorage.setItem("movie", JSON.stringify(data1));
+                        //alert(localStorage.getItem("movie"));
+                        $.mobile.changePage("Info.html", { transition: "slideup" });
+                    },
+                    error: function (x, y, z) {
+                        alert(x + '\n' + y + '\n' + z);
+                    }
+                });
+            }
+            function onPageShow(e, data) {
+                var baseImageUrl = "http://cf2.imgobject.com/t/p/w500/";
+                results = JSON.parse(localStorage.getItem("movies")); 
+                $.each(results, function (index, movie) {
+                   // alert(movie);
+                    $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                   '<div class="ui-btn-text">' +
+                   '<a class="ui-link-inherit">' +
+                        '<img src="' + baseImageUrl + movie.poster_path + '" class="ui-li-thumb">' +
+                        '<h3 class="ui-li-heading">' + movie.title + '</h3>' +
+                        '<p class="ui-li-desc">' + movie.release_date + '</p></a></div>' +
+                   '<span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span></div></li>')
+               .appendTo("#resultsList");
+                });
+                
+                
+                $('ul').children('li').on('click', function () {
+                    var selected_index = $(this).index();
+                    selectedMovie = results[selected_index].id;
+                    //localStorage.setItem("movie", JSON.stringify(selectedMovie));
+                    GetMovieObject();
+
+                   // $.mobile.changePage("Info.html", { transition: "slideup" });
+
+                });
+
+                $('#resultsList').listview("refresh");
+                
+
+            }
+        </script>
+        <div data-theme="d" data-role="header">
+            <h3>Some Movie App</h3>
+        </div>
+
+        <div data-role="content">
+            
+            <h2>Search Results</h2>
+
+            <ul data-role="listview" data-filter="true" data-filter-theme="c" data-divider-theme="d" class="ui-listview" id="resultsList">    
+            </ul>
+
+        </div>
+
+        
+    </div>
+    <script>
+        //App custom javascript
+        </script>
+</body>
+</html>

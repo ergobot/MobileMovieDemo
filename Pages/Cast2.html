@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+    <link rel="stylesheet" href="Styles/Cast.css" />
+    <style>
+        /* App custom styles */
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
+        </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.2.0/jquery.mobile-1.2.0.min.js">
+        </script>
+    <script src="../Scripts/Cast.js"></script>
+
+
+    <script type="text/javascript">
+
+        var movieId = 'tt0087332'
+        var movieObject;
+        var Actors = new Array();
+        var loaded = false;
+
+        function GetMovieId() {
+            var myQuery = basic.value;
+            jQuery.support.cors = true;
+            $.ajax({
+                url: 'http://imdbapi.org/?title=' + myQuery + '&type=json&plot=simple&episode=1&limit=1&yg=0&mt=none&lang=en-US&offset=&aka=simple&release=simple',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data1) {
+                    //alert(data['imdb_id']);
+                    if (data1.length > 0) {
+                        if (data1[0].imdb_id) {
+                            alert(data1[0].imdb_id);
+
+                            movieId = data1[0].imdb_id;
+                            alert("Movie ID found: " + movieId);
+                        }
+                        else {
+                            alert('does not exists');
+                        }
+                    }
+                    else {
+                        MovieNotFound();
+                        
+                    }
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+
+        function GetMovieInfo() {
+            jQuery.support.cors = true;
+            $.ajax({
+                url: 'http://imdbapi.org/?id=tt0087332&type=json&plot=simple&episode=1&lang=en-US&aka=simple&release=simple',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    alert('ready');
+                    movieObject = data;
+                    
+                    //alert(data.rating.toString());
+                    //var str = JSON.stringify(data);
+                    //alert(data);
+                    GetAllActors(movieObject);
+
+                    //<div data-role="collapsible" id="Bill Murray" class="testClass">
+                    //$("<div data-role=\"collapsible\" id=\"test2\" class=\"testClass\"><h3>My Title</h3><p>My Body</p></div>").appendTo("div#myDataSet");
+
+
+
+                    $('.testClass').bind('expand', function () {
+
+                        var myName = $(this).attr('id');
+                        alert('Expanded ' + myName);
+                    }).bind('collapse', function () {
+
+                        //var myName = $(this).attr('id');
+                        //alert('Collapsed ' + myName);
+                    });
+                    $('#myDataSet').trigger('create');
+
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+
+        function GetAllActors(data) {
+
+            $.each(data.actors, function (index, actor) {
+                $("<div data-role=\"collapsible\" id=" + "\"" + actor.toString() + "\" class=\"testClass\"><h3>" + actor.toString() + "</h3><p>My Body</p></div>").appendTo("div#myDataSet");
+                //alert(actor.toString());
+                //alert(index);
+
+            });
+        }
+
+        $(document).ready(function () {
+            // Handler for .ready() called.
+            alert("Hello ready");
+            GetMovieInfo();
+           
+        });
+
+        function MovieNotFound() {
+            var myMessage = document.getElementById('message');
+            myMessage.innerText = basic.value;
+            $("#popupDialog").popup("open")
+        }
+
+
+        function MyFunction() {
+            //alert("Hello World two");
+            //alert(basic.value);
+            GetMovieId();
+
+            
+        }
+    </script>
+
+</head>
+<body>
+    <!-- Home -->
+    <div data-role="page" id="page1">
+        <div data-theme="d" data-role="header">
+            <h3>Ghostbusters
+                </h3>
+        </div>
+        <div data-role="content">
+            <label for="basic">Text Input:</label>
+            <input type="text" name="name" id="basic" value="" />
+            <input type="button" value="Button" onclick="MyFunction();" />
+            <div data-role="collapsible-set" id="reviewsSet">
+
+                <div data-role="collapsible" id="Bill Murray" class="testClass">
+                    <h3>My Title</h3>
+                    <p>My Body</p>
+                </div>
+                <div data-role="collapsible" id="Dan Akryoyd" class="testClass">
+                    <h3>My Title</h3>
+                    <p>My Body</p>
+                </div>
+            </div>
+        </div>
+        <a href="#popupDialog" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-transition="pop" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="c" aria-haspopup="true" aria-owns="#popupDialog" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-up-c">
+            <span class="ui-btn-inner ui-btn-corner-all">
+                <span class="ui-btn-text">Dialog</span></span></a>
+
+        <div class="ui-popup-container pop in ui-popup-active" id="popupDialog-div" style="max-width: 1336px; top: 670px; left: 505px;" tabindex="0">
+        <div data-role="popup" id="popupDialog" data-overlay-theme="a" data-theme="c" style="max-width: 400px;" class="ui-corner-all ui-popup ui-body-c ui-overlay-shadow" aria-disabled="false" data-disabled="false" data-shadow="true" data-corners="true" data-transition="none" data-position-to="origin">
+            <div data-role="header" data-theme="a" class="ui-corner-top ui-header ui-bar-a" role="banner">
+                <h1 class="ui-title" role="heading" aria-level="1">Not Found</h1>
+            </div>
+            <div data-role="content" data-theme="d" class="ui-corner-bottom ui-content ui-body-d" role="main">
+                <h3 class="ui-title">The following movie was not found:</h3>
+                <!--<p>This action cannot be undone.</p>-->
+                <p id="message">
+                    
+                </p>
+                <!--<a href="#" data-role="button" data-inline="true" data-rel="back" data-theme="c" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Cancel</span></span></a>-->
+                <!--<a href="#" data-role="button" data-inline="true" data-rel="back" data-transition="flow" data-theme="b" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-up-b"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Delete</span></span></a>-->
+                <a href="#" data-role="button" data-inline="true" data-rel="back" data-transition="flow" data-theme="b" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-up-b"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Got it, thanks!</span></span></a>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    
+
+    <script>
+        //App custom javascript
+
+        </script>
+</body>
+</html>

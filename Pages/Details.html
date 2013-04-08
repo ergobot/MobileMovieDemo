@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title></title>
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+    <link rel="stylesheet" href="Styles\Info.css" />
+    <style>
+        /* App custom styles */
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
+    </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.2.0/jquery.mobile-1.2.0.min.js">
+    </script>
+    <script src="Scripts\Info.js"> 
+    </script>
+
+
+</head>
+<body>
+    <!-- Home -->
+    <div data-role="page" id="detailsPage">
+
+        <script type="text/javascript">
+
+            // In JQM, the document.ready event will not fire unless this
+            // is the first html page being loaded.
+            // So if it's not the first page loaded, the pageshow event is
+            // how we do stuff when the page is loaded
+            $("#detailsPage").on("pageshow", onPageShow);
+
+            var movie; // page object for the movie
+            var details; // page object for all of the actors
+
+            var myApiKey = '249dh5zbj9rhdd3h2wemy8u6'; // api key for rottentomatoes - - documentation was way cool.
+            var baseUrl = 'http://api.rottentomatoes.com/api/public/v1.0/movies/';
+
+            function searchCallback() {
+                // ajax jsonp formalities.. ?
+            }
+
+            function SetDetails() {
+                var genres = '';
+
+                
+
+                if (movie.budget) {
+                    
+                    $('<li data-role="list-divider" role="heading" class="ui-li ui-li-divider ui-bar-b ui-first-child">Details</li>').appendTo("#detailsList");
+
+                    $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                   '<div class="ui-btn-text">' +
+                   '<a class="ui-link-inherit">' +
+                        '<h3 class="ui-li-heading">Budget</h3>' + // Set the name here
+                        '<p class="ui-li-desc">' + movie.budget + '</p></a></div>' + // Set the actor's character(s) here
+                   '</div></li>')
+               .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                }
+                if (movie.revenue) {
+
+                    $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                   '<div class="ui-btn-text">' +
+                   '<a class="ui-link-inherit">' +
+                        '<h3 class="ui-li-heading">Revenue</h3>' + // Set the name here
+                        '<p class="ui-li-desc">' + movie.revenue + '</p></a></div>' + // Set the actor's character(s) here
+                   '</div></li>')
+               .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                }
+                if (movie.release_date) {
+
+                    $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                   '<div class="ui-btn-text">' +
+                   '<a class="ui-link-inherit">' +
+                        '<h3 class="ui-li-heading">Release Date</h3>' + // Set the name here
+                        '<p class="ui-li-desc">' + movie.release_date + '</p></a></div>' + // Set the actor's character(s) here
+                   '</div></li>')
+               .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                }
+                if (movie.runtime) {
+
+                    $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                   '<div class="ui-btn-text">' +
+                   '<a class="ui-link-inherit">' +
+                        '<h3 class="ui-li-heading">Runtime</h3>' + // Set the name here
+                        '<p class="ui-li-desc">' + movie.runtime + '</p></a></div>' + // Set the actor's character(s) here
+                   '</div></li>')
+               .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                }
+                if (movie.genres) {
+                    $.each(movie.genres, function (index, item) {
+                        genres += item.name + ' ';
+                    });
+                    
+
+                    $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                   '<div class="ui-btn-text">' +
+                   '<a class="ui-link-inherit">' +
+                        '<h3 class="ui-li-heading">Genres</h3>' + // Set the name here
+                        '<p class="ui-li-desc">' + genres + '</p></a></div>' + // Set the actor's character(s) here
+                   '</div></li>')
+               .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                }
+                if (movie.popularity) {
+
+                    $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                   '<div class="ui-btn-text">' +
+                   '<a class="ui-link-inherit">' +
+                        '<h3 class="ui-li-heading">Popularity</h3>' + // Set the name here
+                        '<p class="ui-li-desc">' + movie.popularity + '</p></a></div>' + // Set the actor's character(s) here
+                   '</div></li>')
+               .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                }
+                if (movie.production_companies) {
+                    var productionCompanies = '';
+                    $.each(movie.production_companies, function (index, item) {
+                        productionCompanies += item.name + ' ';
+                    });
+
+
+                    $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                   '<div class="ui-btn-text">' +
+                   '<a class="ui-link-inherit">' +
+                        '<h3 class="ui-li-heading">Production Companies</h3>' + // Set the name here
+                        '<p class="ui-li-desc">' + productionCompanies + '</p></a></div>' + // Set the actor's character(s) here
+                   '</div></li>')
+               .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                }
+                if (movie.production_countries) {
+                    var productionCountries = '';
+                    $.each(movie.production_countries, function (index, item) {
+                        productionCountries += item.name + ' ';
+                    });
+
+
+                    $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                   '<div class="ui-btn-text">' +
+                   '<a class="ui-link-inherit">' +
+                        '<h3 class="ui-li-heading">Production Countries</h3>' + // Set the name here
+                        '<p class="ui-li-desc">' + productionCountries + '</p></a></div>' + // Set the actor's character(s) here
+                   '</div></li>')
+               .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                }
+                if (movie.tagline) {
+
+                    $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                   '<div class="ui-btn-text">' +
+                   '<a class="ui-link-inherit">' +
+                        '<h3 class="ui-li-heading">Tagline</h3>' + // Set the name here
+                        '<p class="ui-li-desc">' + movie.tagline + '</p></a></div>' + // Set the actor's character(s) here
+                   '</div></li>')
+               .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                }
+                if (movie.vote_average) {
+
+                    $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                   '<div class="ui-btn-text">' +
+                   '<a class="ui-link-inherit">' +
+                        '<h3 class="ui-li-heading">Vote Average</h3>' + // Set the name here
+                        '<p class="ui-li-desc">' + movie.vote_average + '</p></a></div>' + // Set the actor's character(s) here
+                   '</div></li>')
+               .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                }
+                if (movie.vote_count) {
+
+                    $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                   '<div class="ui-btn-text">' +
+                   '<a class="ui-link-inherit">' +
+                        '<h3 class="ui-li-heading">Vote Count</h3>' + // Set the name here
+                        '<p class="ui-li-desc">' + movie.vote_count + '</p></a></div>' + // Set the actor's character(s) here
+                   '</div></li>')
+               .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                }
+                if (movie.overview)
+                {
+                    $('#overviewParagraph').html(movie.overview);
+                }
+
+                $('#detailsList').listview("refresh"); // Becuase we dynamically changed stuff, we need to update the UI and call refresh on the listview
+
+                $('#posterGrid').css("height", "+=20"); // the crewlist is slightly on top of the poster image thumbnail, give it more space... (prob a better way)
+                //$('#overviewCollapsible').css("padding-Bottom", parseInt(obj.css("padding")) + 20)
+            }
+
+
+            function GetDetails() {
+                jQuery.support.cors = true; // standard
+                $.ajax({
+
+                    url: baseUrl + movie.id + '.json?apikey=' + myApiKey, // full url
+                    type: 'GET', // standard
+                    dataType: 'jsonp', // needs to be jsonp
+                    jsonpCallback: 'searchCallback',
+                    success: function (data1) {
+                        //var total = parseInt(data1.total); // getting the total actors
+                        details = data1;//.reviews; // setting the page object for actors
+
+                        // Prob a better way (needs more error checking... this is a quick write)
+                        //if (total > 0) {
+                        // for each actor in the actors object
+                        //$.each(details, function (index, detail) {
+                        //var areview
+                        //if (review.critic == '') {
+                        //    areview = "Anon";
+                        //}
+                        //else { areview = review.critic}
+                        //$('<div data-role="collapsible"><h3>' + areview + '</h3>' +
+                        //    '<p>Date: ' + review.date +'</p>' +
+                        //    '<p>Freshness: ' + review.freshness + '</p>' +
+                        //    '<p>Source: ' + review.publication + '</p>' +
+                        //    '<p>Comments: ' + review.quote + '</p>' +
+                        //    '<p>Link: <a href="' + review.links.review + '">' + review.links.review + '</a></p>' +
+                        //    '</div>').appendTo("div#detailsList");
+                        //$.each(details, function (detail, item) {
+                            // Create a new listitem that has a header that shows the actor's name and a description that shows the actor's character(s)
+
+                            if (detail == 'year') {
+                                $('<li data-role="list-divider" role="heading" class="ui-li ui-li-divider ui-bar-b ui-first-child">Details</li>').appendTo("#detailsList");
+
+                                $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                               '<div class="ui-btn-text">' +
+                               '<a class="ui-link-inherit">' +
+                                    '<h3 class="ui-li-heading">Year</h3>' + // Set the name here
+                                    '<p class="ui-li-desc">' + item + '</p></a></div>' + // Set the actor's character(s) here
+                               '</div></li>')
+                           .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                            }
+                            else if(detail == 'genres')
+                            {
+                                $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                                   '<div class="ui-btn-text">' +
+                                   '<a class="ui-link-inherit">' +
+                                        '<h3 class="ui-li-heading">Genres</h3>' + // Set the name here
+                                        '<p class="ui-li-desc">' + item.toString() + '</p></a></div>' + // Set the actor's character(s) here
+                                   '</div></li>')
+                               .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                            }
+                            else if (detail == 'mpaa_rating')
+                            {
+                                $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                                   '<div class="ui-btn-text">' +
+                                   '<a class="ui-link-inherit">' +
+                                        '<h3 class="ui-li-heading">MPAA Rating</h3>' + // Set the name here
+                                        '<p class="ui-li-desc">' + item + '</p></a></div>' + // Set the actor's character(s) here
+                                   '</div></li>')
+                               .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                            }
+                            else if (detail == 'runtime')
+                            {
+                                $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                                   '<div class="ui-btn-text">' +
+                                   '<a class="ui-link-inherit">' +
+                                        '<h3 class="ui-li-heading">Runtime</h3>' + // Set the name here
+                                        '<p class="ui-li-desc">' + item + '</p></a></div>' + // Set the actor's character(s) here
+                                   '</div></li>')
+                               .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                            }
+                            else if (detail == 'critics_consensus')
+                            {
+                                $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                                   '<div class="ui-btn-text">' +
+                                   '<a class="ui-link-inherit">' +
+                                        '<h3 class="ui-li-heading">Critics Comments</h3>' + // Set the name here
+                                        '<p class="ui-li-desc">' + item + '</p></a></div>' + // Set the actor's character(s) here
+                                   '</div></li>')
+                               .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                            }
+                            else if (detail == 'release_dates')
+                            {
+                                var releaseDates;
+                                if (item.hasOwnProperty("theater"))
+                                {
+                                    releaseDates = "Theater: " + item.theater;
+                                }
+                                if (item.hasOwnProperty("dvd"))
+                                {
+                                    releaseDates += ", DVD: " + item.dvd;
+                                }
+
+                                $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                                   '<div class="ui-btn-text">' +
+                                   '<a class="ui-link-inherit">' +
+                                        '<h3 class="ui-li-heading">Release Dates</h3>' + // Set the name here
+                                        '<p class="ui-li-desc">' + releaseDates + '</p></a></div>' + // Set the actor's character(s) here
+                                   '</div></li>')
+                               .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                            }
+                            else if (detail == 'ratings')
+                            {
+                                $('<li data-role="list-divider" role="heading" class="ui-li ui-li-divider ui-bar-b ui-first-child">Ratings</li>').appendTo("#detailsList");
+
+                                if (item.hasOwnProperty("critics_rating") && item.critics_rating != '') {
+
+                                    $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                                      '<div class="ui-btn-text">' +
+                                      '<a class="ui-link-inherit">' +
+                                           '<h3 class="ui-li-heading">Critics Rating</h3>' + // Set the name here
+                                           '<p class="ui-li-desc">Theatre: ' + item.critics_rating + '</p></a></div>' + // Set the actor's character(s) here
+                                      '</div></li>')
+                                  .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                                }
+                                if (item.hasOwnProperty("critics_score") && item.critics_score != '') {
+
+                                    $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                                      '<div class="ui-btn-text">' +
+                                      '<a class="ui-link-inherit">' +
+                                           '<h3 class="ui-li-heading">Critics Score</h3>' + // Set the name here
+                                           '<p class="ui-li-desc">Theatre: ' + item.critics_score + '</p></a></div>' + // Set the actor's character(s) here
+                                      '</div></li>')
+                                  .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                                }
+                                if (item.hasOwnProperty("audience_rating") && item.audience_rating != '') {
+
+                                    $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                                      '<div class="ui-btn-text">' +
+                                      '<a class="ui-link-inherit">' +
+                                           '<h3 class="ui-li-heading">Audience Rating</h3>' + // Set the name here
+                                           '<p class="ui-li-desc">Theatre: ' + item.audience_rating + '</p></a></div>' + // Set the actor's character(s) here
+                                      '</div></li>')
+                                  .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                                }
+                                if (item.hasOwnProperty("audience_score") && item.audience_score != '') {
+
+                                    $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                                      '<div class="ui-btn-text">' +
+                                      '<a class="ui-link-inherit">' +
+                                           '<h3 class="ui-li-heading">Audience Score</h3>' + // Set the name here
+                                           '<p class="ui-li-desc">Theatre: ' + item.audience_score + '</p></a></div>' + // Set the actor's character(s) here
+                                      '</div></li>')
+                                  .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                                }
+                            }
+                            //else if (detail == 'studio') {
+                            //    $('<li data-role="list-divider" role="heading" class="ui-li ui-li-divider ui-bar-b ui-first-child">Misc</li>').appendTo("#detailsList");
+
+                            //    if (item.hasOwnProperty("studio") && item.studio != '') {
+                            //        $('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="d" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-d"><div class="ui-btn-inner ui-li">' +
+                            //         '<div class="ui-btn-text">' +
+                            //         '<a class="ui-link-inherit">' +
+                            //              '<h3 class="ui-li-heading">Studio</h3>' + // Set the name here
+                            //              '<p class="ui-li-desc">Studio: ' + item.studio + '</p></a></div>' + // Set the actor's character(s) here
+                            //         '</div></li>')
+                            //     .appendTo("#detailsList"); // For each new list item, push it into the crewList
+                            //    }
+                            //}
+                         
+                            //});
+                        
+                            //});
+
+                           
+
+                            $('#detailsList').listview("refresh"); // Becuase we dynamically changed stuff, we need to update the UI and call refresh on the listview
+
+                        $('#posterGrid').css("height", "+=20"); // the crewlist is slightly on top of the poster image thumbnail, give it more space... (prob a better way)
+                        //}
+                        //else {
+                        //    MovieNotFound(); // Needs to be fixed
+
+                        //}
+                    },
+                    error: function (x, y, z) {
+                        alert(x + '\n' + y + '\n' + z); // No nonsense error handling
+                    }
+                });
+            }
+
+
+            function onPageShow(e, data) {
+                // new page, get the movie object out of local storage and parse it back into JSON
+                var baseThumbnailUrl = "http://cf2.imgobject.com/t/p/w500";
+                var basePosterUrl = "http://cf2.imgobject.com/t/p/original";
+                // new page, get the movie object out of local storage and parse it back into JSON
+                movie = JSON.parse(localStorage.getItem("movie"));
+                $('#movieTitle').html(movie.title); // Main header gets changed to the movie title
+                $('#posterImage').attr('src', baseThumbnailUrl + movie.poster_path); // image source gets changed to the url of the posters thumbnail
+                $('#originalPoster').attr('src', basePosterUrl + movie.poster_path); // image source gets changed to the url of the original (full) poster
+                $('#posterImage').css('height', "80px"); // change the thumbnail to 80 x 80
+                $('#posterImage').css('width', "80px"); // change the thumbnail to 80 x 80
+                $('#posterGridLeftCol').css('width', "90px"); // Change the width of the left column (the thumbnail), so the popup button aligns next to the thumbnail
+
+                //$('ul').children('li').on('click', function () {
+                //    var selected_index = $(this).index();
+                //    var selectedActor = actors[selected_index];
+                //});
+                SetDetails();
+            }
+
+            
+
+            // binding to the pageinit event for the photo popup
+            $('#castPage').on("pageinit", function () {
+                //movie = JSON.parse(localStorage.getItem("movie"));
+                //GetMovieCast();
+                //practice();
+                $(".photopopup").on({
+                    popupbeforeposition: function () {
+                        var maxHeight = $(window).height() - 60 + "px";
+                        $(".photopopup img").css("max-height", maxHeight);
+                    }
+                });
+            });
+        </script>
+
+
+        <div data-theme="d" data-role="header">
+            <!-- Title of application -->
+            <h3 id="headerText">Some Movie App
+            </h3>
+        </div>
+        <div data-role="content">
+            <!-- Title of the movie -->
+            <h2 id="movieTitle"></h2>
+            <!-- Two column grid holding image and popup button -->
+            <div class="ui-grid-a" id="posterGrid">
+                <div class="ui-block-a" id="posterGridLeftCol">
+                    <img id="posterImage" />
+                </div>
+                <div class="ui-block-b" id="posterGridRightCol">
+                    <a href="#popupPhotoPortrait" data-rel="popup" data-position-to="window" data-role="button" data-theme="b" data-inline="true" data-transition="fade" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" aria-haspopup="true" aria-owns="#popupPhotoPortrait" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-up-b"><span class="ui-btn-inner"><span class="ui-btn-text">View Poster</span></span></a>
+                </div>
+            </div>
+
+            <div data-role="collapsible" id="overviewCollapsible" style="padding-bottom:20px">
+                <h3>Overview</h3>
+                <p id="overviewParagraph">Not available</p>
+            </div>
+
+            <!-- This is the dynamic list of crew members for the movie -->
+            <ul data-role="listview" data-filter="false" data-filter-theme="c" data-divider-theme="d" class="ui-listview" id="detailsList">
+            </ul>
+
+            <!-- These two divs are for the poster photo popup (called from the popup button) -->
+            <div class="ui-popup-screen ui-overlay-a ui-screen-hidden" id="popupPhotoPortrait-screen"></div>
+            <div class="ui-popup-container fade ui-popup-hidden" id="popupPhotoPortrait-popup">
+                <div data-role="popup" id="popupPhotoPortrait" class="photopopup ui-popup ui-overlay-shadow ui-body-c" data-overlay-theme="a" data-corners="false" data-tolerance="30,15" aria-disabled="false" data-disabled="false" data-shadow="true" data-transition="none" data-position-to="origin" data-dismissible="true">
+                    <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-notext ui-btn-up-a" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" title="Close"><span class="ui-btn-inner"><span class="ui-btn-text">Close</span><span class="ui-icon ui-icon-delete ui-icon-shadow">&nbsp;</span></span></a><img id="originalPoster" alt="Photo portrait" style="max-height: 607px;">
+                </div>
+            </div>
+        </div>
+        <script>
+            //App custom javascript
+        </script>
+</body>
+</html>

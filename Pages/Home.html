@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title></title>
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+    <link rel="stylesheet" href="Styles\Home.css" />
+    <style>
+        /* App custom styles */
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
+        </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.2.0/jquery.mobile-1.2.0.min.js">
+        </script>
+    <script src="Scripts\Home.js">
+        </script>
+
+    <script type="text/javascript">
+        
+
+        var myApiKey = '249dh5zbj9rhdd3h2wemy8u6';
+        var baseUrl = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json?';
+        //var movieSearchUrl = baseUrl + 'apikey=' + myApiKey
+        var query = 'Ghostbusters';
+        var movieSearchUrl = 'http://api.themoviedb.org/3/search/movie?api_key=79b9df9924ea866f277e3c1a5fc7ab50&query='
+        function GetMovieIdFromRT() {
+            var param1 = encodeURIComponent(basic.value)
+            //var myQuery = basic.value;
+            jQuery.support.cors = true;
+            $.ajax({
+                url: movieSearchUrl + param1,
+                type: 'GET',
+                dataType: 'jsonp',
+                success: function (data1) {
+                    
+                    var total = parseInt(data1.total_results);
+                    //alert("Total: " + total);
+                    if (total < 1)
+                    {
+                        MovieNotFound();
+                    }
+                    else if (total > 1)
+                    {
+                        localStorage.setItem("movies", JSON.stringify(data1.results));
+                        //alert(localStorage.getItem("movies"));
+                        $.mobile.changePage("MultipleChoices.html", { transition: "slideup" });
+                    }
+                    else if (total == 1)
+                    {
+                        var selectedMovie = data1.results[0];
+                        localStorage.setItem("movie", JSON.stringify(selectedMovie));
+                    }
+
+                     
+                    else {
+                        MovieNotFound();
+
+                    }
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+
+
+
+        function MovieNotFound() {
+            var myMessage = document.getElementById('message');
+            myMessage.innerText = basic.value;
+            $("#popupDialog").popup("open")
+        }
+        
+    </script>
+
+</head>
+<body>
+    <!-- Home -->
+    <div data-role="page" id="page1">
+        <div data-theme="d" data-role="header">
+            <h3>Some Movie App
+                </h3>
+        </div>
+        <div data-role="content">
+            <h2>Research a Movie
+                </h2>
+            <label for="basic">Enter Movie Name:</label>
+            <input type="text" name="name" id="basic" value="" />
+            <input type="button" value="Button" onclick="GetMovieIdFromRT();" />
+
+
+        </div>
+
+        <div class="ui-popup-container pop in ui-popup-active" id="popupDialog-div" style="max-width: 1336px; top: 670px; left: 505px;" tabindex="0">
+            <div data-role="popup" id="popupDialog" data-overlay-theme="a" data-theme="c" style="max-width: 400px;" class="ui-corner-all ui-popup ui-body-c ui-overlay-shadow" aria-disabled="false" data-disabled="false" data-shadow="true" data-corners="true" data-transition="none" data-position-to="origin">
+                <div data-role="header" data-theme="a" class="ui-corner-top ui-header ui-bar-a" role="banner">
+                    <h1 class="ui-title" role="heading" aria-level="1">Not Found</h1>
+                </div>
+                <div data-role="content" data-theme="d" class="ui-corner-bottom ui-content ui-body-d" role="main">
+                    <h3 class="ui-title">The following movie was not found:</h3>
+                    <p id="message">
+                    </p>
+                    <a href="#" data-role="button" data-inline="true" data-rel="back" data-transition="flow" data-theme="b" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" class="ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-up-b"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Got it, thanks!</span></span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        //App custom javascript
+        </script>
+</body>
+</html>
